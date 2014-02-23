@@ -24,8 +24,8 @@ int main() {
 
 	// A mechanism for delay between draws
 	struct timespec t;
-	t.tv_sec = 1;
-	t.tv_nsec = 0; //1000 * 1000 * 10;
+	t.tv_sec = 0; //1;
+	t.tv_nsec = 1000 * 1000 * 100;
 
 	// Rotation
 	int		degrees = 0,
@@ -41,7 +41,7 @@ int main() {
 		radians = (degrees * M_PI)/180;
 		degrees += 6;
 		// Erase the grid
-		grid = gridInit(w, h);
+		//grid = gridInit(w, h);
 
 		// Draw a vector
 		x = (int)roundf(cos(radians)*v1.x - sin(radians)*v1.y);

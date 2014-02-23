@@ -117,20 +117,14 @@ void drawVectorAtOrigin(Vector v, Vector origin, Grid grid) {
 	
 	int 	deltaX = abs(v.x),
 			deltaY = abs(v.y),
-			fromX = min(0, v.x),
-			fromY = min(0, v.y),
-			toX = max(0, v.x),
-			toY = max(0, v.y);
-	/*
-	fromX = 0;
-	fromY = 0;
-	toX = v.x;
-	toY = v.y;
-	*/
+			fromX = min(0, (v.x+1)),
+			fromY = min(0, (v.y+1)),
+			toX = max(1, v.x),
+			toY = max(1, v.y);
+
 	float	slopeY = (float)v.y/(float)v.x,
 			slopeX = (float)v.x/(float)v.y;
 	// Find the axis with the biggest delta
-	//printf("deltaX: %d, deltaY: %d\n", deltaX, deltaY);
 	if (deltaX >= deltaY && deltaY > 0) {
 		for (x = fromX; x < toX; x++) {
 			y = (int)roundf(x * slopeY / 2) + origin.y;
