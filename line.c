@@ -17,7 +17,7 @@ int main() {
 
 	Vector v1 = vectorMake(20, 0, 0);
 	Vector v2 = vectorMake(0, 10, 0);
-	Vector center = vectorMake((int)w/2, (int)h/2, 0);
+	Vector center = vectorMake((int)w/2, (int)h, 0);
 	Vector zero = vectorMake(0, 0, 0);
 
 	Vector v3 = vectorSubtract(v1, v2);
@@ -52,6 +52,29 @@ int main() {
 
 		Vector v5 = vectorMake(0, -10, 0);
 		drawVectorAtOrigin(v5, center, grid);
+
+		// Draw a rectangle
+		Vector r1 = vectorMake(10, 0, 0);
+		Vector r2 = vectorMake(0, 10, 0);
+		Vector r3 = vectorMake(10, 6, 0);
+		Vector r4 = vectorMake(0, 16, 0);
+		Vector r5 = vectorMake(10, -6, 0);
+		Vector r6 = vectorMake(0, -16, 0);
+		Vector r7 = vectorMake(-10, 6, 0);
+
+		/*
+		drawVectorAtOrigin(r1, zero, grid);
+		drawVectorAtOrigin(r2, zero, grid);
+		drawVectorAtOrigin(r2, r1, grid);
+		drawVectorAtOrigin(r1, r2, grid);
+		*/
+		drawVectorAtOrigin(r3, zero, grid);
+		drawVectorAtOrigin(r4, zero, grid);
+		drawVectorAtOrigin(r3, r4, grid);
+		drawVectorAtOrigin(r4, r3, grid);
+		drawVectorAtOrigin(r5, vectorAdd(r4, r3), grid);
+		drawVectorAtOrigin(r6, vectorAdd(r5, vectorAdd(r4, r3)), grid);
+		drawVectorAtOrigin(r7, vectorAdd(r6, vectorAdd(r5, vectorAdd(r4, r3))), grid);
 
 		// Flush grid to the terminal
 		gridDraw(grid);

@@ -120,37 +120,38 @@ void drawVectorAtOrigin(Vector v, Vector origin, Grid grid) {
 			fromX = min(0, (v.x+1)),
 			fromY = min(0, (v.y+1)),
 			toX = max(1, v.x),
-			toY = max(1, v.y);
+			toY = max(1, v.y),
+			originY = origin.y/2;
 
 	float	slopeY = (float)v.y/(float)v.x,
 			slopeX = (float)v.x/(float)v.y;
 	// Find the axis with the biggest delta
 	if (deltaX >= deltaY && deltaY > 0) {
 		for (x = fromX; x < toX; x++) {
-			y = (int)roundf(x * slopeY / 2) + origin.y;
+			y = (int)roundf(x * slopeY / 2) + originY;
 			grid.g[y * grid.w + x + origin.x] = '*';
 		}
 	} else if (deltaX > 0 && deltaY == 0) {
 		for (x = fromX; x < toX; x++) {
-			y = origin.y;
+			y = originY;
 			grid.g[y * grid.w + x + origin.x] = '*';
 		}
 	} else if (deltaX == 0 && deltaY > 0) {
 		// What to do when delta-x is zero ?
 		for (y = fromY; y < toY; y++) {
 			x = origin.x;
-			grid.g[((int)roundf(y/2)+origin.y) * grid.w + x] = '*';
+			grid.g[((int)roundf(y/2)+originY) * grid.w + x] = '*';
 		}
 	} else if (deltaX == 0 && deltaY == 0) {
 		// Point at the origin
 		x = fromX + origin.x;
-		y = toY + origin.y;
+		y = toY + originY;
 		grid.g[y * grid.w + x] = '*';
 	} else {
 		// Line with switched iteration between x and y
 		for (y = fromY; y < toY; y++) {
 			x = (int)roundf(y * slopeX) + origin.x;
-			grid.g[((int)roundf(y/2)+origin.y) * grid.w + x] = '*';
+			grid.g[((int)roundf(y/2)+originY) * grid.w + x] = '*';
 		}
 	}
 }
