@@ -38,43 +38,13 @@ int main() {
 	int test = 1;
 	while (test) {
 		// Calculations
-		radians = (degrees * M_PI)/180;
+		v4 = vectorRotate(v1, degrees);
 		degrees += 6;
 		// Erase the grid
 		//grid = gridInit(w, h);
 
 		// Draw a vector
-		x = (int)roundf(cos(radians)*v1.x - sin(radians)*v1.y);
-		y = (int)roundf(sin(radians)*v1.x + cos(radians)*v1.y);
-
-		v4 = vectorMake(x, y, z);
 		drawVectorAtOrigin(v4, center, grid);
-
-		Vector v5 = vectorMake(0, -10, 0);
-		drawVectorAtOrigin(v5, center, grid);
-
-		// Draw a rectangle
-		Vector r1 = vectorMake(10, 0, 0);
-		Vector r2 = vectorMake(0, 10, 0);
-		Vector r3 = vectorMake(10, 6, 0);
-		Vector r4 = vectorMake(0, 16, 0);
-		Vector r5 = vectorMake(10, -6, 0);
-		Vector r6 = vectorMake(0, -16, 0);
-		Vector r7 = vectorMake(-10, 6, 0);
-
-		/*
-		drawVectorAtOrigin(r1, zero, grid);
-		drawVectorAtOrigin(r2, zero, grid);
-		drawVectorAtOrigin(r2, r1, grid);
-		drawVectorAtOrigin(r1, r2, grid);
-		*/
-		drawVectorAtOrigin(r3, zero, grid);
-		drawVectorAtOrigin(r4, zero, grid);
-		drawVectorAtOrigin(r3, r4, grid);
-		drawVectorAtOrigin(r4, r3, grid);
-		drawVectorAtOrigin(r5, vectorAdd(r4, r3), grid);
-		drawVectorAtOrigin(r6, vectorAdd(r5, vectorAdd(r4, r3)), grid);
-		drawVectorAtOrigin(r7, vectorAdd(r6, vectorAdd(r5, vectorAdd(r4, r3))), grid);
 
 		// Flush grid to the terminal
 		gridDraw(grid);

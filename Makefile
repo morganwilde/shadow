@@ -1,4 +1,4 @@
 CFLAGS=-lm
 
 line: line.c lib.c
-	gcc -lm line.c lib.c -o line
+	gcc -lm -fnested-functions line.c lib.c -o line

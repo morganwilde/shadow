@@ -6,14 +6,21 @@
 //
 // Utilities
 //
-int min(int a, int b) {
+int min(int a, int b) 
+{
 	return (a > b) ? b : a;
 }
-int max(int a, int b) {
+int max(int a, int b) 
+{
 	return (a > b) ? a : b;
 }
+float radians(int degrees) 
+{
+	return (degrees * M_PI)/180;
+}
 
-Vector vectorMake(int x, int y, int z) {
+Vector vectorMake(float x, float y, float z) 
+{
 	Vector v;
 	v.x = x;
 	v.y = y;
@@ -22,7 +29,8 @@ Vector vectorMake(int x, int y, int z) {
 	return v;
 }
 
-Vector vectorSubtract(Vector v1, Vector v2) {
+Vector vectorSubtract(Vector v1, Vector v2) 
+{
 	Vector v;
 	v.x = v2.x - v1.x;
 	v.y = v2.y - v1.y;
@@ -31,7 +39,8 @@ Vector vectorSubtract(Vector v1, Vector v2) {
 	return v;
 }
 
-Vector vectorAdd(Vector v1, Vector v2) {
+Vector vectorAdd(Vector v1, Vector v2) 
+{
 	Vector v;
 	v.x = v1.x + v2.x;
 	v.y = v1.y + v2.y;
@@ -40,12 +49,25 @@ Vector vectorAdd(Vector v1, Vector v2) {
 	return v;
 }
 
-float vectorMagnitude(Vector v) {
+Vector vectorRotate(Vector v, int degrees) 
+{
+	float rads = radians(degrees);
+	Vector rotated;
+	rotated.x = (int)roundf(cos(rads)*v.x - sin(rads)*v.y);
+	rotated.y = (int)roundf(sin(rads)*v.x + cos(rads)*v.y);
+	rotated.z = v.z;
+
+	return rotated;
+}
+
+float vectorMagnitude(Vector v) 
+{
 	return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 }
 
 // Initialize the grid
-Grid gridInit(int w, int h) {
+Grid gridInit(int w, int h) 
+{
 	Grid grid;
 	grid.w = w; // + 1; // Accomodate the extra \n at every line end
 	grid.h = h;
@@ -68,90 +90,48 @@ Grid gridInit(int w, int h) {
 }
 
 // Draw it
-void gridDraw(Grid grid) {
+void gridDraw(Grid grid) 
+{
 	printf("%s", grid.g);
 }
 
-
-void drawVector(Vector v, Grid grid) {
-	// Draw just the projection of this vector on the x axis
-	int x, y, index;
-	
-	int 	deltaX = v.x,
-			deltaY = v.y;
-	float	slopeY = (float)deltaY/(float)deltaX,
-			slopeX = (float)deltaX/(float)deltaY;
-	// Find the axis with the biggest delta
-	//printf("deltaX: %d, deltaY: %d\n", deltaX, deltaY);
-	if (deltaX >= deltaY && deltaY > 0) {
-		for (x = 0; x < deltaX; x++) {
-			y = (int)roundf(x * slopeY);
-			grid.g[y * grid.w + x] = '*';
-		}
-	} else if (deltaX > 0 && deltaY == 0) {
-		for (x = 0; x < deltaX; x++) {
-			grid.g[x] = '*';
-		}
-	} else if (deltaX == 0 && deltaY > 0) {
-		// What to do when delta-x is zero ?
-		for (y = 0; y < deltaY; y++) {
-			grid.g[y * grid.w] = '*';
-		}
-	} else if (deltaX == 0 && deltaY == 0) {
-		// Point at the origin
-		x = deltaX;
-		y = deltaY;
-		grid.g[y * grid.w + x] = '*';
-	} else {
-		// Line with switched iteration between x and y
-		for (y = 0; y < deltaY; y++) {
-			x = (int)roundf(y * slopeX);
-			grid.g[y * grid.w + x] = '*';
-		}
-	}
+// Update it
+void gridUpdate(float x, float y, Vector o, Grid grid) 
+{
+	printf("c: %d [%f, %f]\n", 0, x, y);
+	int 	xc = (int)roundf(x + o.x),		// X component
+			yc = (int)roundf((y + o.y))/2, // Y component (half because of symbol heigh/width ratio
+			coordinate = (grid.w * yc) + xc;
+	printf("c: %d [%d, %d]\n", 0, xc, yc);
+	grid.g[coordinate] = '*';
 }
 
-void drawVectorAtOrigin(Vector v, Vector origin, Grid grid) {
-	// Draw just the projection of this vector on the x axis
-	int x, y, index;
-	
-	int 	deltaX = abs(v.x),
-			deltaY = abs(v.y),
-			fromX = min(0, (v.x+1)),
-			fromY = min(0, (v.y+1)),
-			toX = max(1, v.x),
-			toY = max(1, v.y),
-			originY = origin.y/2;
+void drawVectorAtOrigin(Vector v, Vector origin, Grid grid) 
+{
+	int 	deltaX 		= abs(v.x),
+			deltaY 		= abs(v.y),
+			fromX 		= min(0, (v.x+1)),
+			fromY 		= min(0, (v.y+1)),
+			toX 		= max(1, v.x),
+			toY 		= max(1, v.y),
+			originY 	= origin.y,
+			originX 	= origin.x;
 
 	float	slopeY = (float)v.y/(float)v.x,
 			slopeX = (float)v.x/(float)v.y;
+
 	// Find the axis with the biggest delta
-	if (deltaX >= deltaY && deltaY > 0) {
+	if (deltaX >= deltaY) {
+		// Iterate over X
+		int x;
 		for (x = fromX; x < toX; x++) {
-			y = (int)roundf(x * slopeY / 2) + originY;
-			grid.g[y * grid.w + x + origin.x] = '*';
+			gridUpdate(x, deltaY > 0 ? (x * slopeY) : 0, origin, grid);
 		}
-	} else if (deltaX > 0 && deltaY == 0) {
-		for (x = fromX; x < toX; x++) {
-			y = originY;
-			grid.g[y * grid.w + x + origin.x] = '*';
-		}
-	} else if (deltaX == 0 && deltaY > 0) {
-		// What to do when delta-x is zero ?
-		for (y = fromY; y < toY; y++) {
-			x = origin.x;
-			grid.g[((int)roundf(y/2)+originY) * grid.w + x] = '*';
-		}
-	} else if (deltaX == 0 && deltaY == 0) {
-		// Point at the origin
-		x = fromX + origin.x;
-		y = toY + originY;
-		grid.g[y * grid.w + x] = '*';
 	} else {
-		// Line with switched iteration between x and y
+		// Iterate over Y
+		int y;
 		for (y = fromY; y < toY; y++) {
-			x = (int)roundf(y * slopeX) + origin.x;
-			grid.g[((int)roundf(y/2)+originY) * grid.w + x] = '*';
+			gridUpdate(deltaX > 0 ? (y * slopeX) : 0, y, origin, grid);
 		}
 	}
 }
